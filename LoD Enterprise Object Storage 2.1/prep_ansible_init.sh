@@ -46,34 +46,12 @@ function printresult {
 }
 
 printf "%-50s" "--> Updating CentOS system 'yum update'"
-yum -q -y update 
+yum -y update > /dev/null 2>&1 
 printresult $? "Updating CentOS system failed"
 
 printf "%-50s" "--> Install additional packages 'yum install'"
-yum -q -y install vim wget htop jq 
+yum -y install vim wget htop jq yum-utils > /dev/null 2>&1
 printresult $? "Installing additional packages"
-
-
-printf "%-50s" "--> Turning swap memory off"
-swapoff -a
-printresult $? "Turning swap memory off failed"
-
-
-# Edit the sysctl config file
-# Add a line to define the desired value
-# or change the value if the key exists,
-# and then save your changes.
-printf "%-50s" "--> Setting max_map_count to '262144' in sysctl.conf"
-echo 'vm.max_map_count=262144' >> /etc/sysctl.d/99-sysctl.conf
-printresult $? "Adding line for max_map_count in sysctl.conf failed"
-
-printf "%-50s" "--> Reloading kernel parameters using sysctl"
-sysctl -p
-printresult $? "Reloading kernel parameters failed"
-
-# Verify that the change was applied by checking the value
-printf "%-50s" "--> Check if changes in sysctl were applied"
-printf "%s\n" $(cat /proc/sys/vm/max_map_count)
 
 
 # Based on supplied arguments start docker containers
@@ -81,19 +59,6 @@ shopt -s nocasematch
 for args in "$@"
 do
     case $args in
-
-      elastic)
-        printf "%-50s" "--> Starting Docker container for Elasticsearch"
-        # Creating volume to hold Opensearch data
-        printf "%-50s" "      > Creating directory for Elastic Search data"
-        mkdir /usr/share/elastic-data
-        printresult $? "Failed to create directory '/usr/share/elastic-data' kernel parameters failed"
-        mkdir /usr/share/kibana-data
-        printresult $? "Failed to create directory '/usr/share/kibana-data' kernel parameters failed"
-
-        cd ./elastic
-        docker-compose up -d
-        ;;
 
       minio)
         printf "%-50s" "--> Starting Docker container for Minio"
