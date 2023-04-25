@@ -56,12 +56,12 @@ printresult $? "Installing additional packages"
 
 # Install IUS repository
 yum -y install https://repo.ius.io/ius-release-el7.rpm > /dev/null 2>&1
-yum -y remove git
-yum -y install git236
+yum -y remove git > /dev/null 2>&1
+yum -y install git236 > /dev/null 2>&1
 
 
 printf "%-50s\n" "--> Installing needed pip packages"
-pip3 install -q requests selinux boto3
+pip3 install -q requests selinux boto3 > /dev/null 2>&1
 printresult $? "Installing pip packages failed"
 
 printf "%-50s\n" "--> Adding lines to ignore certificate errors"
@@ -84,7 +84,7 @@ if [ -d "/usr/local/go" ]; then
     printresult $? "Removing old version of go failed"
 fi
 printf "%-50s" "      > Unpacking golang to /usr/local"
-tar -C /usr/local -xzf go1.20.3.linux-amd64.tar.gz
+tar -C /usr/local -xzf go1.20.3.linux-amd64.tar.gz 
 printresult $? "Unpacking of golang 1.20.3 failed"
 
 printf "%-50s" "      > Adding go binary location to path in .bash_profile"
