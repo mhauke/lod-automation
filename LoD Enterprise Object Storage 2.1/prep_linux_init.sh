@@ -97,6 +97,6 @@ printresult $? "Reloading .bash_profile failed"
 
 
 ## To Do:
-- configure Storage Pools
+#- configure Storage Pools
 
 
