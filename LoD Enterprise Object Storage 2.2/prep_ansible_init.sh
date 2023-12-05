@@ -4,14 +4,14 @@
 #
 # Title:        prep_ansible_init.sh
 # Author:       Marko Hauke
-# Date:         2023-04-22
+# Date:         2023-12-04
 # Description:  Prepare linux host "Ansible" in LoD lab
 #               --> "Enterprise Object Storage in the Data Fabric
-#                   with StorageGRID v2.1"
+#                   with StorageGRID v2."
 #
-# URLs:         https://labondemand.netapp.com/lab/sl10712 (NetApp + Partner)
-#               
-#               https://docs.netapp.com/us-en/storagegrid-116/
+# URLs:         https://labondemand.netapp.com/node/586
+#
+#               https://docs.netapp.com/us-en/storagegrid-117/
 #               https://galaxy.ansible.com/netapp/storagegrid
 #
 ################################################################################
@@ -26,7 +26,7 @@ printf "\n\n"
 printf "%s\n" "${blue}#############################################################################"
 printf "%s\n" "# Preparing NetApp Lab on Demand system                                     #"
 printf "%s\n" "#       ----- Ansible System -----                                          #"
-printf "%s\n" "# (Lab: Enterprise Object Storage in the Data Fabric with StorageGRID v2.1) #"
+printf "%s\n" "# (Lab: Enterprise Object Storage in the Data Fabric with StorageGRID v2.2) #"
 printf "%s\n" "#############################################################################${normal}"
 printf "\n"
 printf "%s\n" "This script will update the system and install required package. It will prepare"
@@ -53,6 +53,13 @@ printf "%-50s" "--> Install additional packages 'yum install'"
 yum -y install vim wget htop jq yum-utils > /dev/null 2>&1
 printresult $? "Installing additional packages"
 
+printf "%-50s" "--> Update Ansible Collection for NetApp StorageGRID"
+ansible-galaxy collection install -f netapp.storagegrid
+printresult $? "Updating Ansible Collection"  
+
+printf "%-50s" "--> Cloning git repository for S3 basis demo"
+git clone -q https://github.com/mhauke/lod-s3basics.git
+printresult $? "Error getting git repository"
 
 # Based on supplied arguments start docker containers
 shopt -s nocasematch

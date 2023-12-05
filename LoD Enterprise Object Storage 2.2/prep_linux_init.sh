@@ -4,15 +4,14 @@
 #
 # Title:        prep_linux_init.sh
 # Author:       Marko Hauke
-# Date:         2023-04-22
+# Date:         2023-12-04
 # Description:  Prepare linux host "Linux1" in LoD lab
 #               --> "Enterprise Object Storage in the Data Fabric
-#                   with StorageGRID v2.1"
+#                   with StorageGRID v2.2"
 #
-# URLs:         https://labondemand.netapp.com/lab/sl10712 (NetApp + Partner)
+# URLs:         https://labondemand.netapp.com/node/586
 #               
-#               https://docs.netapp.com/us-en/storagegrid-116/
-#               https://galaxy.ansible.com/netapp/storagegrid
+#               https://docs.netapp.com/us-en/storagegrid-117/
 #
 ################################################################################
 
@@ -26,11 +25,11 @@ printf "\n\n"
 printf "%s\n" "${blue}#############################################################################"
 printf "%s\n" "# Preparing NetApp Lab on Demand system                                     #"
 printf "%s\n" "#       ----- Linux1 System -----                                           #"
-printf "%s\n" "# (Lab: Enterprise Object Storage in the Data Fabric with StorageGRID v2.1) #"
+printf "%s\n" "# (Lab: Enterprise Object Storage in the Data Fabric with StorageGRID v2.2) #"
 printf "%s\n" "#############################################################################${normal}"
 printf "\n"
 printf "%s\n" "This script will update the system and install required package. It will also install"
-printf "%s\n" "Python 3.13.3 via pyenv."
+printf "%s\n" "Python 3."
 
 # defining a function to print results base on exit code
 # Params:
@@ -75,8 +74,9 @@ printf "%-50s" "      > Restarting shell for changes to take effect"
 printresult $? "Restarting shell failed"
 
 printf "%-50s\n" "--> Installing golang"
-printf "%-50s" "      > Download golang 1.20.3 using wget"
-wget https://go.dev/dl/go1.20.3.linux-amd64.tar.gz > /dev/null 2>&1
+printf "%-50s" "      > Download golang 1.21.4 using wget"
+GO_DOWNLOAD="go1.21.4.linux-amd64.tar.gz"
+wget -O /tmp/$GO_DOWNLOAD https://go.dev/dl/$GO_DOWNLOAD > /dev/null 2>&1
 printresult $? "Download failed"
 if [ -d "/usr/local/go" ]; then
     printf "%-50s" "      > Removing old golang version"
@@ -84,7 +84,7 @@ if [ -d "/usr/local/go" ]; then
     printresult $? "Removing old version of go failed"
 fi
 printf "%-50s" "      > Unpacking golang to /usr/local"
-tar -C /usr/local -xzf go1.20.3.linux-amd64.tar.gz 
+tar -C /usr/local -xzf /tmp/$GO_DOWNLOAD 
 printresult $? "Unpacking of golang 1.20.3 failed"
 
 printf "%-50s" "      > Adding go binary location to path in .bash_profile"
@@ -96,7 +96,7 @@ printf "%-50s" "      > Reloading .bash_profile for changes to take effect"
 printresult $? "Reloading .bash_profile failed"
 
 
-## To Do:
-#- configure Storage Pools
-
+printf "%-50s" "--> Cloning git repository for S3 basis demo"
+git clone -q https://github.com/mhauke/lod-s3basics.git
+printresult $? "Error getting git repository"
 
