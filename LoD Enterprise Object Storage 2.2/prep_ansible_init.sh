@@ -63,8 +63,8 @@ printf "%-50s" "--> Update Ansible Collection for NetApp StorageGRID"
 su ansible -l -c "ansible-galaxy collection install -f netapp.storagegrid" > /dev/null 2>&1
 printresult $? "Updating Ansible Collection"  
 
-printf "%-50s" "--> Cloning git repository for S3 basis demo"
-su ansible -l -c "git -c /home/ansible/lod-ansible pull || git clone -q https://github.com/mhauke/lod-s3basics.git /home/ansible/lod-ansible"
+printf "%-50s" "--> Cloning git repository for StorageGRID ansible examples"
+su ansible -l -c "git -c /home/ansible/lod-ansible pull > /dev/null 2>&1 || git clone -q https://github.com/mhauke/lod-ansible.git /home/ansible/lod-ansible"
 printresult $? "Error getting git repository"
 
 # Based on supplied arguments start docker containers
