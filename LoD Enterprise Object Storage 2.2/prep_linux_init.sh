@@ -97,6 +97,6 @@ printresult $? "Reloading .bash_profile failed"
 
 
 printf "%-50s" "--> Cloning git repository for S3 basis demo"
-git clone -q https://github.com/mhauke/lod-s3basics.git
+git -c /root/lod-s3basics pull > /dev/null 2>&1 || git clone -q https://github.com/mhauke/lod-s3basics.git /root/lod-s3basics
 printresult $? "Error getting git repository"
 
