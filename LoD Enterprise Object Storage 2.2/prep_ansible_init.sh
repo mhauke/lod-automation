@@ -45,6 +45,12 @@ function printresult {
     fi
 }
 
+# Make sure only root can run our script
+if [ "$(id -u)" != "0" ]; then
+   printresult 1 "This script must be run as root" 1>&2
+   exit 1
+fi
+
 printf "%-50s" "--> Updating CentOS system 'yum update'"
 yum -y update > /dev/null 2>&1 
 printresult $? "Updating CentOS system failed"
@@ -54,11 +60,11 @@ yum -y install vim wget htop jq yum-utils > /dev/null 2>&1
 printresult $? "Installing additional packages"
 
 printf "%-50s" "--> Update Ansible Collection for NetApp StorageGRID"
-ansible-galaxy collection install -f netapp.storagegrid
+su ansible -l -c "ansible-galaxy collection install -f netapp.storagegrid" > /dev/null 2>&1
 printresult $? "Updating Ansible Collection"  
 
 printf "%-50s" "--> Cloning git repository for S3 basis demo"
-git clone -q https://github.com/mhauke/lod-s3basics.git
+su ansible -l -c "git -c /home/ansible/lod-ansible pull || git clone -q https://github.com/mhauke/lod-s3basics.git /home/ansible/lod-ansible"
 printresult $? "Error getting git repository"
 
 # Based on supplied arguments start docker containers
